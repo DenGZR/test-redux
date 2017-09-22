@@ -5,10 +5,6 @@ export const API_URL = 'https://jsonplaceholder.typicode.com';
 
 export default function callApi(endpoint, method = 'get', body, options = { isJSON: true }) {
 
-  // if (isFake(endpoint, method)) {
-  //   return new Promise(resolve => resolve(getFakeResponse(endpoint, method, body)));
-  // }
-
   const headers = {};
 
   if (options.isJSON) {
@@ -21,7 +17,7 @@ export default function callApi(endpoint, method = 'get', body, options = { isJS
     body: options.isJSON || method !== 'get' ? JSON.stringify(body) : body,
   })
   .then(response => response.json().then(json => ({ json, response })))
-  .then(({ json, response }) => {    
+  .then(({ json, response }) => {
     if (!response.ok) {
       return Promise.reject(json);
     }

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import { Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
-import { fetchAllUsers } from './UsersActions';
+import UserCard from './Components/UserCard.js';
+import UserForm from './Form/UserForm.js';
+import { fetchAllUsers, fetchShearchUser } from './UsersActions';
 
 const mapStateToProps = (state) => ({
   usersList: state.users.data
@@ -9,12 +11,14 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   fetchUsers: () => fetchAllUsers(),
+  searchUser: (id) => fetchShearchUser(id)
 };
 
 class Users extends Component {
   static defaultProps = {
     usersList: [],
     fetchUsers() {},
+    searchUser() {},
   };
 
   componentDidMount() {
@@ -22,18 +26,40 @@ class Users extends Component {
     fetchUsers();
   }
 
+  onSubmitUserForm = ({userId}) => {
+    console.log(userId);
+    const { searchUser } = this.props;
+    searchUser(userId);
+  }
+
   render() {
     const { usersList } = this.props;
-    console.log('usersList', usersList);
+
     return (
-      <div>
-        hello users!!!
-        {
-          usersList.map((user, index) => (
-            <p key={user.id}>{user.name}</p>
-          ))
-        }
-      </div>
+      <Container>
+        <Row>
+          <Col xs={{ size: 10, offset: 1 }}>
+            <h1>JSONPlaceholder</h1>
+            <p>Fake Online REST API for Testing and Prototyping</p>
+            <p>powered by JSON Server and lowdb </p>
+            <hr/>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={{ size: 6, offset: 3 }}>
+              <UserForm onSubmit={this.onSubmitUserForm}/>
+           </Col>
+        </Row>
+        <Row>
+           {
+             usersList.map((user, index) => (
+                  <Col xs="4" key={index}>
+                    <UserCard {...user}/>
+                 </Col>
+             ))
+           }
+         </Row>
+      </Container>
     );
   }
 }
